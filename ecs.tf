@@ -39,7 +39,7 @@ resource "aws_ecs_task_definition" "this" {
 }
 
 resource "aws_ecs_cluster" "this" {
-  count = var.ecs_cluster == null ? 0 : 1
+  count = var.ecs_cluster == null ? 1 : 0
 
   name = var.name
 
@@ -51,17 +51,17 @@ resource "aws_ecs_cluster" "this" {
 }
 
 resource "local_file" "container_dockerfile" {
-  count    = var.container_image_dockerfile ? 1 : 0
-  filename = "${path.module}/build/Dockerfile"
+  count    = var.container_image_dockerfile != null ? 1 : 0
+  filename = "${local.out}/Dockerfile"
   content  = var.container_image_dockerfile
 }
 
 resource "null_resource" "container_image" {
-  count = var.container_image_dockerfile ? 1 : 0
+  count = var.container_image_dockerfile != null ? 1 : 0
 
   provisioner "local-exec" {
-    command     = "docker build -f ${local_file.container_dockerfile[0].filename} ."
-    working_dir = "${out}/"
+    command     = "docker build ."
+    working_dir = "${local.out}/"
     environment = {
       AWS_REGION = var.region
     }

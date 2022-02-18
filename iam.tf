@@ -1,6 +1,6 @@
 data "aws_iam_policy_document" "ecs_assume_role_policy" {
   statement {
-    actions = ["sts:AssumeRole"],
+    actions = ["sts:AssumeRole"]
     effect  = "Allow"
     sid     = "AllowECSTaskAssumeRole"
     principals {
@@ -8,7 +8,7 @@ data "aws_iam_policy_document" "ecs_assume_role_policy" {
         "ecs-tasks.amazonaws.com",
         "ecs.amazonaws.com",
       ]
-      type = "service"
+      type = "Service"
     }
   }
 }
@@ -23,7 +23,7 @@ resource "aws_iam_role" "execution" {
 resource "aws_iam_role" "this" {
   name                 = "${var.name}-task"
   path                 = var.resource_path_prefix
-  permissions_boundary = var.permissions_boundary || null
+  permissions_boundary = var.permissions_boundary
   assume_role_policy   = data.aws_iam_policy_document.ecs_assume_role_policy.json
 }
 
@@ -39,14 +39,14 @@ resource "aws_iam_role_policy_attachment" "this_ecs_task" {
 
 data "aws_iam_policy_document" "lambda_assume_role_policy" {
   statement {
-    actions = ["sts:AssumeRole"],
+    actions = ["sts:AssumeRole"]
     effect  = "Allow"
     sid     = "AllowLambdaAssumeRole"
     principals {
       identifiers = [
         "lambda.amazonaws.com"
       ]
-      type = "service"
+      type = "Service"
     }
   }
 }

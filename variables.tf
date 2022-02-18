@@ -6,22 +6,14 @@ variable "assign_public_ip" {
 
 variable "container_image_url" {
   description = "URL of the Elastic Container Repository"
-  value       = string
+  type        = string
   default     = null
 }
 
 variable "container_image_dockerfile" {
   description = "Dockerfile contents to build a Container Image"
-  value       = string
+  type        = string
   default     = null
-  validation {
-    condition     = !(var.container_image_url == null && var.container_image_dockerfile == null)
-    error_message = "Either container_image_dockerfile or container_image_url must be specified."
-  }
-  validation {
-    condition     = !(var.container_image_url != null && var.container_image_dockerfile != null)
-    error_message = "Only one of container_image_dockerfile or container_image_url must be specified."
-  }
 }
 
 variable "cpu" {
@@ -51,13 +43,13 @@ variable "environment" {
 variable "log_stream_prefix" {
   description = "Log stream prefix"
   type        = string
-  default     = ""
+  default     = "/flash/shell/"
 }
 
 variable "resource_path_prefix" {
   description = "Prefix for all resources with paths (e.g. IAM, CloudWatch Logs)"
   type        = string
-  default     = "/flash-shell"
+  default     = "/flash/shell/"
 }
 
 variable "memory" {
@@ -68,7 +60,7 @@ variable "memory" {
 
 variable "name" {
   description = "Name of this flash shell instance"
-  value       = string
+  type        = string
 }
 
 variable "permissions_boundary" {
@@ -91,8 +83,8 @@ variable "repository_url" {
 
 variable "secrets" {
   description = "Map containing environment key / ARN (secret) pairs"
-  type = map(string)
-  default = {}
+  type        = map(string)
+  default     = {}
 }
 
 variable "security_group_ids" {
