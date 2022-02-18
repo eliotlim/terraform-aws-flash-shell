@@ -5,8 +5,8 @@ data "aws_iam_policy_document" "ecs_assume_role_policy" {
     sid     = "AllowECSTaskAssumeRole"
     principals {
       identifiers = [
-        "ecs-tasks.amazonaws.com",
         "ecs.amazonaws.com",
+        "ecs-tasks.amazonaws.com",
       ]
       type = "Service"
     }

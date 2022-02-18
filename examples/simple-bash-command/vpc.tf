@@ -24,9 +24,10 @@ resource "aws_security_group" "flash_shell" {
   name = "flash-shell-example"
 
   egress {
-    from_port = 0
-    protocol  = ""
-    to_port   = 0
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 0
+    protocol    = "tcp"
+    to_port     = 0
   }
 
   tags = merge(var.tags, {
