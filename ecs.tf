@@ -60,12 +60,23 @@ resource "null_resource" "container_image" {
   count = var.container_image_dockerfile != null ? 1 : 0
 
   provisioner "local-exec" {
-    command     = "docker build --tag ${var.name}:latest . && docker tag ${var.name}:latest ${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.name}:latest"
+    command     = <<EOF
+      docker build --tag "${var.name}:latest" . && \
+      docker tag "${var.name}:latest" "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.name}:latest"
+    EOF
     working_dir = "${local.out}/"
     environment = {
       AWS_REGION = var.region
     }
   }
+
+  triggers = {
+    redeployment = sha256(join(",", [
+      jsonencode(local_file.container_dockerfile),
+    ]))
+  }
+
+  depends_on = [local_file.container_dockerfile]
 }
 
 data "aws_caller_identity" "current" {}
@@ -74,10 +85,23 @@ resource "null_resource" "container_repository" {
   count = var.container_image_dockerfile != null ? 1 : 0
 
   provisioner "local-exec" {
-    command     = "aws ecr get-login-password --region ${var.region} | docker login --username AWS --password-stdin ${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com && docker push ${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.name}:latest"
+    command     = <<EOF
+      aws ecr get-login-password --region ${var.region} | \
+        docker login --username AWS --password-stdin ${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com && \
+      docker push "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.name}:latest"
+    EOF
     working_dir = "${local.out}/"
     environment = {
       AWS_REGION = var.region
     }
   }
+
+  triggers = {
+    redeployment = sha256(join(",", [
+      jsonencode(local_file.container_dockerfile),
+      jsonencode(null_resource.container_image),
+    ]))
+  }
+
+  depends_on = [null_resource.container_image]
 }

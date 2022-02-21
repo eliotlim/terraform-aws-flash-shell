@@ -1,3 +1,7 @@
+locals {
+  lambda_use_vpc = var.lambda_security_group_ids != null && var.subnet_ids != null ? [true] : []
+}
+
 resource "aws_lambda_function" "this" {
   function_name = var.name
   role          = aws_iam_role.this_lambda.arn
@@ -23,9 +27,13 @@ resource "aws_lambda_function" "this" {
     })
   }
 
-  vpc_config {
-    subnet_ids         = var.subnet_ids
-    security_group_ids = var.security_group_ids
+  dynamic "vpc_config" {
+    for_each = local.lambda_use_vpc
+
+    content {
+      subnet_ids         = var.lambda_subnet_ids
+      security_group_ids = var.lambda_security_group_ids
+    }
   }
 
   depends_on = [

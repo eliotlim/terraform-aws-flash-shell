@@ -40,6 +40,18 @@ variable "environment" {
   default     = {}
 }
 
+variable "lambda_security_group_ids" {
+  description = "List of security groups to apply to the lambda"
+  type        = list(string)
+  default     = null
+}
+
+variable "lambda_subnet_ids" {
+  description = "List of subnets to place the lambda"
+  type        = list(string)
+  default     = null
+}
+
 variable "log_stream_prefix" {
   description = "Log stream prefix"
   type        = string

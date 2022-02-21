@@ -1,1 +1,1 @@
-FROM alpine
+FROM amd64/alpine
