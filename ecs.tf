@@ -60,7 +60,21 @@ resource "null_resource" "container_image" {
   count = var.container_image_dockerfile != null ? 1 : 0
 
   provisioner "local-exec" {
-    command     = "docker build ."
+    command     = "docker build --tag ${var.name}:latest . && docker tag ${var.name}:latest ${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.name}:latest"
+    working_dir = "${local.out}/"
+    environment = {
+      AWS_REGION = var.region
+    }
+  }
+}
+
+data "aws_caller_identity" "current" {}
+
+resource "null_resource" "container_repository" {
+  count = var.container_image_dockerfile != null ? 1 : 0
+
+  provisioner "local-exec" {
+    command     = "aws ecr get-login-password --region ${var.region} | docker login --username AWS --password-stdin ${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com && docker push ${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.name}:latest"
     working_dir = "${local.out}/"
     environment = {
       AWS_REGION = var.region

@@ -72,7 +72,6 @@ variable "permissions_boundary" {
 variable "region" {
   description = "AWS Region"
   type        = string
-  default     = ""
 }
 
 variable "repository_url" {
