@@ -1,0 +1,22 @@
+---
+- name: Pre-flight checks
+  hosts:
+    - localhost
+  vars:
+    keypair_secret_id: "{{ lookup('env', 'KEYPAIR_SECRET_ID') }}"
+  tasks:
+    - name: Ensures .ssh directory exists
+      file: path=~/.ssh state=directory
+    - name: Retrieve SSH Key
+      ansible.builtin.copy:
+        content: "{{ lookup('amazon.aws.aws_secret', keypair_secret_id) }}"
+        dest: ~/.ssh/id_rsa
+        mode: '0400'
+
+- name: Run ansible playbook
+  hosts:
+    - localhost
+  tasks:
+    - name: Print a debug message
+      ansible.builtin.debug:
+        msg: "This ansible playbook has been run successfully"

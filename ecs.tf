@@ -50,21 +50,20 @@ resource "aws_ecs_cluster" "this" {
   })
 }
 
-resource "local_file" "container_dockerfile" {
-  count    = var.container_image_dockerfile != null ? 1 : 0
-  filename = "${local.out}/Dockerfile"
-  content  = var.container_image_dockerfile
+data "local_file" "container_dockerfile" {
+  count    = var.container_image_dockercontext != null ? 1 : 0
+  filename = "${var.container_image_dockercontext}/Dockerfile"
 }
 
 resource "null_resource" "container_image" {
-  count = var.container_image_dockerfile != null ? 1 : 0
+  count = var.container_image_dockercontext != null ? 1 : 0
 
   provisioner "local-exec" {
     command     = <<EOF
       docker build --tag "${var.name}:latest" . && \
       docker tag "${var.name}:latest" "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.name}:latest"
     EOF
-    working_dir = "${local.out}/"
+    working_dir = "${var.container_image_dockercontext}/"
     environment = {
       AWS_REGION = var.region
     }
@@ -72,17 +71,17 @@ resource "null_resource" "container_image" {
 
   triggers = {
     redeployment = sha256(join(",", [
-      jsonencode(local_file.container_dockerfile),
+      jsonencode(data.local_file.container_dockerfile),
     ]))
   }
 
-  depends_on = [local_file.container_dockerfile]
+  depends_on = [data.local_file.container_dockerfile]
 }
 
 data "aws_caller_identity" "current" {}
 
 resource "null_resource" "container_repository" {
-  count = var.container_image_dockerfile != null ? 1 : 0
+  count = var.container_image_dockercontext != null ? 1 : 0
 
   provisioner "local-exec" {
     command     = <<EOF
@@ -98,7 +97,7 @@ resource "null_resource" "container_repository" {
 
   triggers = {
     redeployment = sha256(join(",", [
-      jsonencode(local_file.container_dockerfile),
+      jsonencode(data.local_file.container_dockerfile),
       jsonencode(null_resource.container_image),
     ]))
   }

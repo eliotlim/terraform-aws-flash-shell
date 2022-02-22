@@ -1,0 +1,6 @@
+ansible==4.3.0
+ansible-runner
+awscli
+boto3
+botocore
+psycopg2-binary

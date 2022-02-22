@@ -10,8 +10,8 @@ variable "container_image_url" {
   default     = null
 }
 
-variable "container_image_dockerfile" {
-  description = "Dockerfile contents to build a Container Image"
+variable "container_image_dockercontext" {
+  description = "Path to the build directory containing the Dockerfile and context to build a Container Image"
   type        = string
   default     = null
 }

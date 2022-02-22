@@ -1,7 +1,7 @@
 variable "name" {
   description = "Name of project / stack"
   type        = string
-  default     = "simple-bash-command"
+  default     = "ansible-playbook"
 }
 
 variable "region" {
@@ -14,7 +14,7 @@ variable "tags" {
   description = "Tags for project resources"
   type        = map(string)
   default     = {
-    Project   = "simple-bash-command"
+    Project   = "ansible-playbook"
     Terraform = true
   }
 }
