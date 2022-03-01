@@ -1,6 +1,6 @@
 module "flash_bash" {
   source  = "eliotlim/flash-shell/aws"
-  version = "~>0.0.1"
+  version = "~>0.0.2"
 
   name               = var.name
   region             = var.region
