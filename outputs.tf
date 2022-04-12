@@ -17,12 +17,12 @@ output "arn_family" {
 
 output "cluster_id" {
   description = "ID of the created ECS cluster"
-  value       = aws_ecs_cluster.this.id
+  value       = var.ecs_cluster == null ? aws_ecs_cluster.this[0].id : var.ecs_cluster
 }
 
 output "cluster_arn" {
   description = "ARN of the created ECS cluster"
-  value       = aws_ecs_cluster.this.arn
+  value       = var.ecs_cluster == null ? aws_ecs_cluster.this[0].arn : var.ecs_cluster
 }
 
 output "name" {
