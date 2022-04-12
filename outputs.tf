@@ -17,12 +17,17 @@ output "arn_family" {
 
 output "cluster_id" {
   description = "ID of the created ECS cluster"
-  value = aws_ecs_cluster.this.id
+  value       = aws_ecs_cluster.this.id
 }
 
 output "cluster_arn" {
   description = "ARN of the created ECS cluster"
-  value = aws_ecs_cluster.this.arn
+  value       = aws_ecs_cluster.this.arn
+}
+
+output "name" {
+  description = "Name of this flash shell instance"
+  value       = var.name
 }
 
 output "function_arn" {
