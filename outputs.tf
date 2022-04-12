@@ -15,6 +15,16 @@ output "arn_family" {
   value       = replace(aws_ecs_task_definition.this.arn, "/^(?P<arn>.*):[0-9]+$/", "$arn")
 }
 
+output "cluster_id" {
+  description = "ID of the created ECS cluster"
+  value = aws_ecs_cluster.this.id
+}
+
+output "cluster_arn" {
+  description = "ARN of the created ECS cluster"
+  value = aws_ecs_cluster.this.arn
+}
+
 output "function_arn" {
   description = "Lambda Function ARN"
   value       = aws_lambda_function.this.arn
