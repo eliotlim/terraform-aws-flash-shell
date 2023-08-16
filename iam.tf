@@ -32,11 +32,6 @@ resource "aws_iam_role_policy_attachment" "execute_ecs_task" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-resource "aws_iam_role_policy_attachment" "this_ecs_task" {
-  role       = aws_iam_role.this.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-}
-
 data "aws_iam_policy_document" "lambda_assume_role_policy" {
   statement {
     actions = ["sts:AssumeRole"]
